@@ -98,8 +98,8 @@ class SearchResultsPanel extends React.Component {
                 </div>
             </div>
             <div className="ui centered grid" key="searchResults">
-                <div className="twelve wide column">
-                    <SearchResultsList items={results} ></SearchResultsList>
+                <div className="column">
+                    <SearchResultsList items={results} />
                 </div>
             </div>
         </div>;
