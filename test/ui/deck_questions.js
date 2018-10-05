@@ -45,7 +45,7 @@ function waitForElementVisible(driver, locator) {
         await login(driver, loginEmail, loginPassword);
 
         await findElement(driver, By.id('slideWikiLogo'));
-        await findElement(driver, By.id('downIcon')).click();
+        await waitForElement(driver, By.id('downIcon')).click();
 
         /* Another way to make async calls. */
         driver.findElement(By.id('decksItem')).then((element) => element.click());
