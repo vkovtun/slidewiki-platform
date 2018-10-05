@@ -66,13 +66,21 @@ function waitForElementVisible(driver, locator) {
 
         await waitForElement(driver, By.linkText('Test Deck 1')).click();
 
-        waitForElement(driver, By.id('questionsTab')).then((element) => {
-            /* This wait is needed to avoid to quick switch to the questions tab, otherwise the default tab will be
-             * displayed again.*/
-            driver.sleep(2000).then(() => {
-                element.click()
-            }).then(() => {driver.sleep(2000)});
-        });
+        // waitForElement(driver, By.id('questionsTab')).then((element) => {
+        //     /* This wait is needed to avoid to quick switch to the questions tab, otherwise the default tab will be
+        //      * displayed again.*/
+        //     driver.sleep(2000).then(() => {
+        //         element.click()
+        //     }).then(() => {driver.sleep(2000)});
+        // });
+
+        const element = await waitForElement(driver, By.id('questionsTab'));
+
+        /* These waits are needed to avoid to quick switch to the questions tab, otherwise the default tab will be
+         * displayed again.*/
+        await driver.sleep(2000);
+        await element.click();
+        await driver.sleep(2000);
 
         await waitForElement(driver, By.id('addQuestion')).click();
 
@@ -83,7 +91,17 @@ function waitForElementVisible(driver, locator) {
         await findElement(driver, By.id('response2')).sendKeys('2');
         await findElement(driver, By.id('response3')).sendKeys('3');
         await findElement(driver, By.id('response4')).sendKeys('4');
-        await findElement(driver, By.xpath('//*[@for="answer4"]')).click();
+        await findElement(driver, By.xpath('//*[@id="answer4"]/..')).click();
+        await findElement(driver, By.id('easy')).click();
+        await findElement(driver, By.id('explanation')).sendKeys('Very easy question');
+        await findElement(driver, By.id('saveQuestionButtonAdd')).click();
+        await findElement(driver, By.xpath('//*[@id="answer3"]/..')).click();
+        await findElement(driver, By.id('showHideAnswerButton')).click();
+        await findElement(driver, By.xpath('//div[@class="header" and text()="4"]'));
+        await findElement(driver, By.id('editQuestionButton')).click();
+        await findElement(driver, By.id('deleteQuestionButtonEdit')).click();
+        await findElement(driver, By.xpath('//*[text()="Delete this question. Are you sure?"]'));
+        await findElement(driver, By.xpath('//button[@type="button" and contains(text(), "Yes, delete!")]')).click();
     } finally {
         await driver.quit();
     }
