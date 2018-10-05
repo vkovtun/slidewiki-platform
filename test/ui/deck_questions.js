@@ -41,52 +41,26 @@ function waitForElementVisible(driver, locator) {
     const driver = new webdriver.Builder().forBrowser('firefox').usingServer('http://localhost:4444/wd/hub')
             .setFirefoxOptions(firefox).build();
 
-    const capabilities = await driver.getCapabilities();
-    capabilities['map_'].set('timeouts', { implicit: 5000, pageLoad: 5000, script: 5000 });
-
-
-
-    // const timeouts = await driver.manage.getTimeouts();
-
-    // driver.manage().setTimeouts({null, null, true});
-
-    // const driver = new webdriver.Builder().forBrowser('chrome').usingServer('http://localhost:4444/wd/hub')
-    //         .setChromeOptions(chrome).build();
-
     try {
-        // await driver.manage().setTimeouts( { implicit: 5000 } );
-
         await login(driver, loginEmail, loginPassword);
 
-        await driver.findElement(By.id('slideWikiLogo'));
-        await driver.findElement(By.id('downIcon')).click();
+        await findElement(driver, By.id('slideWikiLogo'));
+        await findElement(driver, By.id('downIcon')).click();
 
-        // await driver.findElement(By.id('decksItem')).click();
+        /* Another way to make async calls. */
         driver.findElement(By.id('decksItem')).then((element) => element.click());
 
         await waitForElement(driver, By.linkText('Test Deck 1')).click();
 
-        // waitForElement(driver, By.id('questionsTab')).then((element) => {
-        //     /* This wait is needed to avoid to quick switch to the questions tab, otherwise the default tab will be
-        //      * displayed again.*/
-        //     driver.sleep(2000).then(() => {
-        //         element.click()
-        //     }).then(() => {driver.sleep(2000)});
-        // });
-
         const element = await waitForElement(driver, By.id('questionsTab'));
 
-        /* These waits are needed to avoid to quick switch to the questions tab, otherwise the default tab will be
+        /* These wait is needed to avoid to quick switch to the questions tab, otherwise the default tab will be
          * displayed again.*/
         await driver.sleep(2000);
         await element.click();
-        await driver.sleep(2000);
 
         await waitForElement(driver, By.id('addQuestion')).click();
-
-        const question = await waitForElement(driver, By.id('question'));
-        driver.sleep(1000);
-        await question.sendKeys('2+2=');
+        await waitForElement(driver, By.id('question')).sendKeys('2+2=');
         await findElement(driver, By.id('response1')).sendKeys('1');
         await findElement(driver, By.id('response2')).sendKeys('2');
         await findElement(driver, By.id('response3')).sendKeys('3');
