@@ -13,6 +13,18 @@ async function login(driver, loginEmail, loginPassword) {
     await driver.findElement(By.xpath('//form[contains(@class, "signin")]//button/span[normalize-space(text())="Sign In"]')).click();
 }
 
+function findElement(driver, locator) {
+    return driver.findElement(locator);
+}
+
+function waitForElement(driver, locator) {
+    return driver.wait(until.elementLocated(locator), 10000);
+}
+
+function waitForElementVisible(driver, locator) {
+    return driver.wait(until.elementIsVisible(locator), 10000);
+}
+
 (async function deckQuestions() {
     // email: "dazuyopuho@bit2tube.com"
     // name: "tester-tib"
@@ -29,19 +41,49 @@ async function login(driver, loginEmail, loginPassword) {
     const driver = new webdriver.Builder().forBrowser('firefox').usingServer('http://localhost:4444/wd/hub')
             .setFirefoxOptions(firefox).build();
 
+    const capabilities = await driver.getCapabilities();
+    capabilities['map_'].set('timeouts', { implicit: 5000, pageLoad: 5000, script: 5000 });
+
+
+
+    // const timeouts = await driver.manage.getTimeouts();
+
+    // driver.manage().setTimeouts({null, null, true});
+
     // const driver = new webdriver.Builder().forBrowser('chrome').usingServer('http://localhost:4444/wd/hub')
     //         .setChromeOptions(chrome).build();
 
     try {
-        // await driver.manage().timeouts().implicitlyWait(TimeSpan.FromSeconds(5));
+        // await driver.manage().setTimeouts( { implicit: 5000 } );
 
         await login(driver, loginEmail, loginPassword);
 
         await driver.findElement(By.id('slideWikiLogo'));
         await driver.findElement(By.id('downIcon')).click();
-        await driver.findElement(By.id('decksItem')).click();
-        await driver.sleep(3000);
-        await driver.findElement(By.linkText('Test Deck 1')).click();
+
+        // await driver.findElement(By.id('decksItem')).click();
+        driver.findElement(By.id('decksItem')).then((element) => element.click());
+
+        await waitForElement(driver, By.linkText('Test Deck 1')).click();
+
+        waitForElement(driver, By.id('questionsTab')).then((element) => {
+            /* This wait is needed to avoid to quick switch to the questions tab, otherwise the default tab will be
+             * displayed again.*/
+            driver.sleep(2000).then(() => {
+                element.click()
+            }).then(() => {driver.sleep(2000)});
+        });
+
+        await waitForElement(driver, By.id('addQuestion')).click();
+
+        const question = await waitForElement(driver, By.id('question'));
+        driver.sleep(1000);
+        await question.sendKeys('2+2=');
+        await findElement(driver, By.id('response1')).sendKeys('1');
+        await findElement(driver, By.id('response2')).sendKeys('2');
+        await findElement(driver, By.id('response3')).sendKeys('3');
+        await findElement(driver, By.id('response4')).sendKeys('4');
+        await findElement(driver, By.xpath('//*[@for="answer4"]')).click();
     } finally {
         await driver.quit();
     }
