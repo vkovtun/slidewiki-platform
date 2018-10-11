@@ -1,17 +1,8 @@
-const {Builder, By, Key, until} = require('selenium-webdriver');
+const {By, until} = require('selenium-webdriver');
 const webdriver = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
 const firefox = require('selenium-webdriver/firefox');
-
-async function login(driver, loginEmail, loginPassword) {
-    await driver.get('http://localhost:3000/');
-    await driver.findElement(By.xpath('/html/body'));
-    await driver.findElement(By.xpath('//button/span[normalize-space(text())="Sign In"]')).click();
-
-    await driver.findElement(By.id('email1')).sendKeys(loginEmail);
-    await driver.findElement(By.id('password1')).sendKeys(loginPassword);
-    await driver.findElement(By.xpath('//form[contains(@class, "signin")]//button/span[normalize-space(text())="Sign In"]')).click();
-}
+const commons = require('./commons');
 
 function findElement(driver, locator) {
     return driver.findElement(locator);
@@ -21,8 +12,8 @@ function waitForElement(driver, locator) {
     return driver.wait(until.elementLocated(locator), 10000);
 }
 
-function waitForElementVisible(driver, locator) {
-    return driver.wait(until.elementIsVisible(locator), 10000);
+function waitForElementVisible(driver, element) {
+    return driver.wait(until.elementIsVisible(element), 10000);
 }
 
 (async function deckQuestions() {
@@ -42,7 +33,7 @@ function waitForElementVisible(driver, locator) {
             .setFirefoxOptions(firefox).build();
 
     try {
-        await login(driver, loginEmail, loginPassword);
+        await commons.login(driver, loginEmail, loginPassword);
 
         await findElement(driver, By.id('slideWikiLogo'));
         await waitForElement(driver, By.id('downIcon')).click();
