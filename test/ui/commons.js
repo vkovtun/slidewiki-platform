@@ -3,7 +3,10 @@ const webdriver = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
 const firefox = require('selenium-webdriver/firefox');
 
+const timeout = 5000;
+
 module.exports = {
+    userName: 'tester-tib',
 
     getWebDriver: function () {
         // email: "dazuyopuho@bit2tube.com"
@@ -15,8 +18,19 @@ module.exports = {
         //    const url = 'http://' + userName + ':' + key + '@ondemand.saucelabs.com:80/wd/hub';
         //    const driver = new webdriver.Builder().forBrowser('firefox').usingServer(url).setFirefoxOptions(firefox).build();
 
-        return new webdriver.Builder().forBrowser('firefox').usingServer('http://localhost:4444/wd/hub')
-                .setFirefoxOptions(firefox).build();
+        // const options = new firefox.Options();
+        // options.addArguments('start-maximized');
+        // options.addArguments('disable-popup-blocking');
+        // options.addArguments('test-type');
+        // const driver = new webdriver.Builder().withCapabilities(options.toCapabilities()).build();
+        // driver.get('http://localhost:4444/wd/hub');
+        //
+        // return driver;
+
+        const options = new firefox.Options();
+
+        return new webdriver.Builder().usingServer('http://localhost:4444/wd/hub')
+                .withCapabilities(options.toCapabilities()).build();
     },
 
     findElement: function (driver, locator) {
@@ -24,11 +38,18 @@ module.exports = {
     },
 
     waitForElement: function(driver, locator) {
-        return driver.wait(until.elementLocated(locator), 10000);
+        return driver.wait(until.elementLocated(locator), timeout);
     },
 
+    // waitForElementAndForVisible: function(driver, locator) {
+    //     driver.wait(until.elementLocated(locator), timeout)
+    //         .then(() => {
+    //             return driver.wait(until.elementIsVisible(element));
+    //         });
+    // },
+
     waitForElementVisible: function (driver, element) {
-        return driver.wait(until.elementIsVisible(element), 10000);
+        return driver.wait(until.elementIsVisible(element), timeout);
     },
 
     login: async function (driver) {

@@ -1,8 +1,7 @@
 const {By, until} = require('selenium-webdriver');
-
 const commons = require('./commons');
 
-(async function deckQuestions() {
+(async function () {
     const driver = commons.getWebDriver();
 
     try {
@@ -18,7 +17,7 @@ const commons = require('./commons');
 
         const element = await commons.waitForElement(driver, By.id('questionsTab'));
 
-        /* These wait is needed to avoid to quick switch to the questions tab, otherwise the default tab will be
+        /* This wait is needed to avoid to quick switch to the questions tab, otherwise the default tab will be
          * displayed again.*/
         await driver.sleep(2000);
         await element.click();
