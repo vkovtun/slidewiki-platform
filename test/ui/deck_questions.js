@@ -2,7 +2,7 @@ const {By, until} = require('selenium-webdriver');
 const commons = require('./commons');
 
 (async function () {
-    const driver = commons.getWebDriver();
+    const driver = await commons.getWebDriver();
 
     try {
         await commons.login(driver);

@@ -3,47 +3,11 @@ const commons = require('./commons');
 const assert = require('assert');
 
 (async function () {
-    const driver = commons.getWebDriver();
+    const driver = await commons.getWebDriver();
     const testDeck1Title = 'Test Deck 1';
 
-    // Old attempt to solve the dimmer problem.
-    // async function orderDecksBy(orderByValue) {
-    //     // const dimmer = await commons.findElement(driver, By.className('ui active dimmer'));
-    //     // if (dimmer) {
-    //         // await driver.wait(until.stalenessOf(dimmer), 2000);
-    //         // await driver.wait(until.elementIsNotVisible(dimmer), 2000);
-    //     // }
-    //
-    //     /* Allowing the dimmer to pass. Better find a way around this hack. */
-    //     // await driver.sleep(1000);
-    //
-    //     const foundElementsPromise = driver.findElements(
-    //             By.xpath('//*[contains(@class, "ui active dimmer")] | //*[contains(@class, "icon exchange")]'));
-    //
-    //     const foundDimmer = foundElementsPromise.then((elements) => elements.filter(
-    //         (foundElement) => foundElement.getAttribute('class') === 'ui active dimmer'
-    //     ))[0];
-    //     const foundButton = foundElementsPromise.then((elements) => elements.filter(
-    //         (foundElement) => foundElement.getAttribute('class') === 'icon exchange'
-    //     ))[0];
-    //
-    //     console.log('foundDimmer=' + foundDimmer + ", foundButton=" + foundButton);
-    //
-    //     if (foundButton) {
-    //         const classAttribute = await foundButton.getAttribute('class');
-    //         const tagName = await foundButton.getTagName();
-    //         console.log('classAttribute="' + classAttribute + '", tagName="' + tagName + '"]');
-    //     }
-    //
-    //     if (foundDimmer) {
-    //         await driver.wait(until.elementIsNotVisible(foundDimmer), 2000);
-    //     }
-    //
-    //     await foundButton.click();
-    //     await commons.findElement(driver, By.xpath('//*[text()="' + orderByValue + '"]')).click();
-    // }
-
     async function goToMyDecks() {
+        await driver.sleep(2000);
         await commons.waitForElement(driver, By.id('downIcon')).click();
         await commons.findElement(driver, By.id('decksItem')).click();
         await commons.waitForElement(driver, By.linkText('My Decks')).click();
