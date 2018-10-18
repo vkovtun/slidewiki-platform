@@ -37,7 +37,7 @@ module.exports = {
         return await driver.wait(until.elementLocated(locator), timeout);
     },
 
-    waitForElementAndForVisible: (driver, locator) => {
+    waitForElementAndForVisible: async (driver, locator) => {
         return new Promise(function(resolve, reject){
             driver.wait(until.elementLocated(locator), timeout).then(
                 (element) => {
@@ -52,12 +52,25 @@ module.exports = {
                     reject(err);
                 });
         });
+    },
 
-
-        // driver.wait(until.elementLocated(locator), timeout)
-        //     .then(async (element) => {
-        //         await driver.wait(until.elementIsVisible(element), timeout);
-        //     });
+    waitForElementAndForNotVisible: async (driver, locator) => {
+        return new Promise(function(resolve, reject){
+            driver.wait(until.elementLocated(locator), 100).then(
+                (element) => {
+                    driver.wait(until.elementIsNotVisible(element), timeout).then(resolve,
+                        (err) => {
+                            if (err.name === "StaleElementReferenceError") {
+                                resolve(err);
+                            } else {
+                                reject(err);
+                            }
+                        });
+                },
+                (err) => {
+                    resolve(err);
+                });
+        });
     },
 
     waitForElementVisible: async (driver, element) => {

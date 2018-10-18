@@ -7,7 +7,6 @@ const assert = require('assert');
     const testDeck1Title = 'Test Deck 1';
 
     async function goToMyDecks() {
-        await driver.sleep(2000);
         await (await commons.waitForElement(driver, By.id('downIcon'))).click();
         await (await commons.findElement(driver, By.id('decksItem'))).click();
         await (await commons.waitForElement(driver, By.linkText('My Decks'))).click();
@@ -29,23 +28,12 @@ const assert = require('assert');
     }
 
     async function orderDecksBy(orderByValue) {
-        await driver.sleep(1000);
-        await (await commons.findElement(driver, By.className('icon exchange'))).click();
+        await commons.waitForElementAndForNotVisible(driver, By.className('ui active dimmer'));
+        await (await commons.waitForElementAndForVisible(driver, By.className('icon exchange'))).click();
         await (await commons.findElement(driver, By.xpath('//*[text()="' + orderByValue + '"]'))).click();
     }
 
     async function clickUserName() {
-        // await driver.executeScript(() => {
-        //     while(true) {
-        //         if (driver.) {
-        //             document.querySelector('.anticon.anticon-plus').click();
-        //             break;
-        //         }
-        //     }
-        // });
-
-        // await commons.waitForElementAndForVisible(driver, By.linkText(testDeck1Title)).click();
-        await driver.sleep(2000);
         await (await commons.waitForElement(driver, By.linkText(testDeck1Title))).click();
         await (await commons.waitForElement(driver, By.linkText(commons.userName))).click();
         await driver.sleep(2000);
