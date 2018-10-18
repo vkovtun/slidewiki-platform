@@ -4,12 +4,15 @@ const chrome = require('selenium-webdriver/chrome');
 const firefox = require('selenium-webdriver/firefox');
 
 const timeout = 10000;
+const applicationUrl = 'http://localhost:3000/';
 const serverUrl = 'http://localhost:4444/wd/hub';
+const userName = 'tester-tib';
 
 module.exports = {
-    userName: 'tester-tib',
+    applicationUrl,
+    userName,
 
-    getWebDriver: async function () {
+    getWebDriver: async () => {
         // email: "dazuyopuho@bit2tube.com"
         // name: "tester-tib"
         // pass: "slidewiki2test"
@@ -22,30 +25,50 @@ module.exports = {
         return await new webdriver.Builder().forBrowser('firefox').usingServer(serverUrl).build()
     },
 
-    findElement: function (driver, locator) {
-        return driver.findElement(locator);
+    findElement: async (driver, locator) => {
+        return await driver.findElement(locator);
     },
 
-    waitForElement: function(driver, locator) {
-        return driver.wait(until.elementLocated(locator), timeout);
+    findElements: async (driver, locator) => {
+        return await driver.findElements(locator);
     },
 
-    // waitForElementAndForVisible: function(driver, locator) {
-    //     driver.wait(until.elementLocated(locator), timeout)
-    //         .then(() => {
-    //             return driver.wait(until.elementIsVisible(element));
-    //         });
-    // },
-
-    waitForElementVisible: function (driver, element) {
-        return driver.wait(until.elementIsVisible(element), timeout);
+    waitForElement: async (driver, locator) => {
+        return await driver.wait(until.elementLocated(locator), timeout);
     },
 
-    login: async function (driver) {
+    waitForElementAndForVisible: (driver, locator) => {
+        return new Promise(function(resolve, reject){
+            driver.wait(until.elementLocated(locator), timeout).then(
+                (element) => {
+                    driver.wait(until.elementIsVisible(element), timeout).then(resolve,
+                        (err) => {
+                            console.log(err);
+                            reject(err);
+                        });
+                },
+                (err) => {
+                    console.log(err);
+                    reject(err);
+                });
+        });
+
+
+        // driver.wait(until.elementLocated(locator), timeout)
+        //     .then(async (element) => {
+        //         await driver.wait(until.elementIsVisible(element), timeout);
+        //     });
+    },
+
+    waitForElementVisible: async (driver, element) => {
+        return await driver.wait(until.elementIsVisible(element), timeout);
+    },
+
+    login: async (driver) => {
         const loginEmail = 'dazuyopuho@bit2tube.com';
         const loginPassword = 'slidewiki2test';
 
-        await driver.get('http://localhost:3000/');
+        await driver.get(applicationUrl);
         await driver.findElement(By.xpath('/html/body'));
         await driver.findElement(By.xpath('//button/span[normalize-space(text())="Sign In"]')).click();
 
@@ -53,5 +76,10 @@ module.exports = {
         await driver.findElement(By.id('password1')).sendKeys(loginPassword);
         await driver.findElement(By.xpath('//form[contains(@class, "signin")]//button/span[normalize-space(text())="Sign In"]')).click();
     },
+
+    filter: async (arr, callback) => {
+        const fail = Symbol();
+        return (await Promise.all(arr.map(async item => (await callback(item)) ? item : fail))).filter(i => i !== fail);
+    }
 
 };

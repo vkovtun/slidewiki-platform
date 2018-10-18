@@ -8,18 +8,18 @@ const assert = require('assert');
 
     async function goToMyDecks() {
         await driver.sleep(2000);
-        await commons.waitForElement(driver, By.id('downIcon')).click();
-        await commons.findElement(driver, By.id('decksItem')).click();
-        await commons.waitForElement(driver, By.linkText('My Decks')).click();
+        await (await commons.waitForElement(driver, By.id('downIcon'))).click();
+        await (await commons.findElement(driver, By.id('decksItem'))).click();
+        await (await commons.waitForElement(driver, By.linkText('My Decks'))).click();
     }
 
     async function openMyDeckAndGoBack() {
         await driver.sleep(2000);
-        await commons.waitForElement(driver, By.linkText(testDeck1Title)).click();
+        await (await commons.waitForElement(driver, By.linkText(testDeck1Title))).click();
         await commons.waitForElement(driver, By.css('h2.ui.header'));
-        await commons.findElement(driver, By.id('downIcon')).click();
-        await commons.findElement(driver, By.id('decksItem')).click();
-        await commons.waitForElement(driver, By.linkText('My Decks')).click();
+        await (await commons.findElement(driver, By.id('downIcon'))).click();
+        await (await commons.findElement(driver, By.id('decksItem'))).click();
+        await (await commons.waitForElement(driver, By.linkText('My Decks'))).click();
     }
 
     async function tryOrdering() {
@@ -30,8 +30,8 @@ const assert = require('assert');
 
     async function orderDecksBy(orderByValue) {
         await driver.sleep(1000);
-        await commons.findElement(driver, By.className('icon exchange')).click();
-        await commons.findElement(driver, By.xpath('//*[text()="' + orderByValue + '"]')).click();
+        await (await commons.findElement(driver, By.className('icon exchange'))).click();
+        await (await commons.findElement(driver, By.xpath('//*[text()="' + orderByValue + '"]'))).click();
     }
 
     async function clickUserName() {
@@ -46,15 +46,15 @@ const assert = require('assert');
 
         // await commons.waitForElementAndForVisible(driver, By.linkText(testDeck1Title)).click();
         await driver.sleep(2000);
-        await commons.waitForElement(driver, By.linkText(testDeck1Title)).click();
-        await commons.waitForElement(driver, By.linkText(commons.userName)).click();
+        await (await commons.waitForElement(driver, By.linkText(testDeck1Title))).click();
+        await (await commons.waitForElement(driver, By.linkText(commons.userName))).click();
         await driver.sleep(2000);
 
         const allWindowHandles = await driver.getAllWindowHandles();
         await driver.switchTo().window(allWindowHandles[1]);
 
-        const headerText = await commons.waitForElement(driver, By.id('decksHeader')).getText();
-        assert(headerText === 'My Decks');
+        const headerText = await (await commons.waitForElement(driver, By.id('decksHeader'))).getText();
+        assert.equal('My Decks', headerText);
 
         await commons.findElement(driver, By.xpath('//*[normalize-space(text())="' + commons.userName + '"]'));
 
@@ -64,9 +64,9 @@ const assert = require('assert');
 
     async function changePublicationStatusRadio() {
         await goToMyDecks();
-        await commons.findElement(driver, By.id('published_hidden_label')).click();
-        await commons.findElement(driver, By.id('published_public_label')).click();
-        await commons.findElement(driver, By.id('published_any_label')).click();
+        await (await commons.findElement(driver, By.id('published_hidden_label'))).click();
+        await (await commons.findElement(driver, By.id('published_public_label'))).click();
+        await (await commons.findElement(driver, By.id('published_any_label'))).click();
     }
 
     async function goToAnotherUsersMyDeck() {
