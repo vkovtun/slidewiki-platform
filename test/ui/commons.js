@@ -38,24 +38,16 @@ module.exports = {
     },
 
     waitForElementAndForVisible: async (driver, locator) => {
-        return new Promise(function(resolve, reject){
+        return new Promise((resolve, reject) => {
             driver.wait(until.elementLocated(locator), timeout).then(
                 (element) => {
-                    driver.wait(until.elementIsVisible(element), timeout).then(resolve,
-                        (err) => {
-                            console.log(err);
-                            reject(err);
-                        });
-                },
-                (err) => {
-                    console.log(err);
-                    reject(err);
-                });
+                    driver.wait(until.elementIsVisible(element), timeout).then(resolve, reject);
+                }, reject);
         });
     },
 
     waitForElementAndForNotVisible: async (driver, locator) => {
-        return new Promise(function(resolve, reject){
+        return new Promise((resolve, reject) => {
             driver.wait(until.elementLocated(locator), 100).then(
                 (element) => {
                     driver.wait(until.elementIsNotVisible(element), timeout).then(resolve,
@@ -92,7 +84,8 @@ module.exports = {
 
     filter: async (arr, callback) => {
         const fail = Symbol();
-        return (await Promise.all(arr.map(async item => (await callback(item)) ? item : fail))).filter(i => i !== fail);
+        return (await Promise.all(arr.map(async (item, index) => (await callback(item, index)) ? item : fail)))
+            .filter(i => i !== fail);
     }
 
 };
